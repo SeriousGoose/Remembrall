@@ -1,0 +1,313 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Remembrall</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script charset="utf-8" src="main.js"></script>
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: black;
+            font-family: 'Roboto', sans-serif;
+        }
+        #remembrall{
+            text-align: center;
+            
+            color: #fff;
+            text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+            font-size: 8vmin;
+            margin-left: 10vw;
+        }
+        #settings{
+            margin-right: 2vw;
+            
+        }
+        #settingsHeader{
+            border: black 2px solid;
+            background-color: blue;
+            padding: 5px;
+            text-align: center;
+        }
+        #settingsContainer{
+            border: black 2px solid;
+            background-color: rgb(0, 195, 255);
+            padding: 5px;
+        }
+
+        .settingsButtons{
+            background-color: transparent;
+            border: none;
+        }
+
+        .settingsButtons:hover{
+            text-decoration: underline;
+        }
+        #content{
+            display: flex;
+            justify-content: center;
+            
+        }
+        #app{
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            height:80vh;
+            width: 90vw;
+        }
+        #categories{
+            height: 70vh;
+            min-width: 200px;
+            
+            border: black 2px solid;
+            background-color: rgb(171, 223, 69);
+            overflow-y:auto
+        }
+        #catHeader{
+            display: flex;
+            justify-content: center;
+            
+        }
+        #catHeaderContainer{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: black 2px solid;
+            background-color: green;
+            min-width: 180px;
+            height: 6vh;
+            font-size: 30px;
+        }
+        .categoryItems{
+            border: black 1px solid;
+            padding: 5px;
+            margin: 3px 6px 3px 6px;
+            text-align: left;
+            background-color: rgb(42, 167, 42);
+        }
+        .categoryItems:hover{
+            background-color: green;
+        }
+        #toDo{
+            height: 70vh;
+            width: 55vw;
+            min-width: 400px;
+            border: black 2px solid;
+            background-color: pink;
+            overflow-y:auto
+        }
+        #toDoHeader{
+            min-width: 350px;
+            display: flex;
+            justify-content: center;
+        }
+        #toDoHeaderContainer{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: black 2px solid;
+            background-color: red;
+            width: 50vw;
+            height: 6vh;
+            font-size: 30px;
+        }
+        
+        .toDoItems{
+            border: black 1px solid;
+            padding: 5px;
+            margin: 3px 6px 3px 6px;
+            text-align: center;
+            background-color: rgb(252, 104, 104);
+            display: grid;
+            grid-template-columns: auto auto auto;
+        }
+        .toDoItems:hover{
+            background-color: red;
+        }
+        #form{
+            width: 195px;
+            height: 225px;
+            border: black 2px solid;
+            background-color: violet;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+
+        }
+        #formHeader{
+            display: flex;
+            justify-content: center;
+        }
+        #formHeaderContainer{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: black 2px solid;
+            background-color:purple;
+            width: 175px;
+            height: 45px;
+            
+        }
+        #categoryForm{
+            width:200px;
+            height:130px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: yellow;
+            border: black 2px solid;
+        }
+        #newCategoryHeader{
+            height:30px;
+            width:150px;
+            border: black 2px solid;
+            background-color: orange;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #newCategoryContainer{
+            display: flex;
+            justify-content: center;
+        }
+        #modal{
+            display: none;
+        }
+        .modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; 
+}
+    </style>
+</head>
+<header>
+    <div id ="headercontainer">
+        <div id = "remembrall">Remembrall</div>
+    </div>
+    <div id = "settings">
+        <div id ="settingsHeader">Settings</div>
+        <div id ="settingsContainer">
+            <button id = "categoryButton" class = "settingsButtons" title="Category Settings">Category Settings</button>
+            <br>
+            <button id = "userButton" class = "settingsButtons" title = "User Settings">User Settings</button>
+        </div>
+    </div>
+</header>
+<body>
+    <div id = "content"> 
+        <div id = "app">
+            <div id = "categories">
+                <div id = "catHeader">
+                    <div id ="catHeaderContainer">
+                        <div id = "catHeaderText">Categories</div>
+                        <button id = addCategory>+</button>
+                    </div>
+                </div>
+                <div id = "catContainer">
+                    <div id = "catList">
+                        <div class = "categoryItems">Default</div>
+                        <div class = "categoryItems">Work</div>
+                        <div class = "categoryItems">School</div>
+                        <div class = "categoryItems">Family</div>
+                    </div>
+                </div>
+            </div>
+            <div id = "toDo">
+                <div id = "toDoHeader">
+                    <div id = "toDoHeaderContainer">
+                        <div id = "toDoHeaderText">ToDo</div>
+                        <button id = newToDo>+</button>
+                    </div>
+                </div>
+                <div id = toDoContainer>
+                    <div id = "toDoList">
+                    </div>
+                </div>
+
+            </div>
+            <div id = "modal" class = "modal">
+            <div id = "form" class = "modal-content">
+                <div id = "formHeader" >
+                    <div id = "formHeaderContainer">
+                        <div id = "formHeaderText">New ToDo</div>
+                    </div>
+                </div>
+                <div id = "formContainer">
+                    <form id = "newForm">
+                        <label for = "title">What do you want to Do?</label>
+                        <input id = "title" type="text" required>
+                        <br>
+                        <label for = "description">Description</label>
+                        <br>
+                        <textarea id = "description" type="text"></textarea>
+                        <br>
+                        <label for = "itemClass">Select Category</label>
+                        <select id = "itemClass">
+                            <option value = "default">Default</option>
+                            <option value = "work">Work</option>
+                            <option value = "school">School</option>
+                            <option value = "family">Family</option>
+                        </select>
+                        <br>
+                        <label for = "date">Select Due Date</label>
+                        <input id = "date" type="date">
+                        <br>
+                        <!--<label for = "important">Check if Important</label>
+                        <input id = "important" type="checkbox">
+                        <br>-->
+                        <button id = "formSubmit" onclick="return false">Remember It</button>
+                        <button id = "formCancel" onclick="return false">Forget It</button>
+                    </form>
+                </div>
+            </div>
+            </div>
+            <div id = "categoryModal" class = "modal">
+                <div id ="categoryForm" class = "modal-content">
+                    <div id = "newCategoryHeader">
+                        <div id = "newCategoryHeaderContainer">
+                            <div id = "newCategoryText">Add Category</div>
+                        </div>
+                    </div>
+                    <div id = "newCategoryContainer">
+                        <form id = "newCategory">
+                            <br>
+                            <label for = "categoryTitle">Enter new Category Name</label>
+                            <input id = "categoryTitle" type = "text" maxlength = "15" required>
+                            <br>
+                            <br>
+                            <button id = "categorySubmit" onclick="return false">Add Category</button>
+                            <button id = "categoryCancel" onclick="return false">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
