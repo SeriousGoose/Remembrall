@@ -1,8 +1,14 @@
 let defaultToDoArray = ["default",[]];
-let workToDoArray = ["work",[]];
-let schoolToDoArray = ["school", []];
-let familyToDoArray = ["family", []];
-let classArrays = [defaultToDoArray,workToDoArray,schoolToDoArray,familyToDoArray]
+let classArrays = [defaultToDoArray]
+
+function sortArrays() {
+    classArrays.forEach(element =>
+        element[1].sort((a,b) => b.date - a.date))
+
+        console.log(classArrays)
+    classArrays.forEach(element =>
+        console.log(element[1][0].date))
+}
 
 export default class ToDo {
     constructor(title,description,category,date){
@@ -55,7 +61,7 @@ export function printToDo(element){
         newToDo.appendChild(toDoDescription);}
 }
 
-export function createToDo(){
+export function createToDo(){//Messy, not following single responsibility principle
     formSubmit.addEventListener('click', () => {
         let toDo = new ToDo(title.value, description.value, itemClass.value ,date.value )
     
@@ -64,12 +70,57 @@ export function createToDo(){
                 element[1].push(toDo)
             }})
         newForm.reset();
+        sortArrays();
         toDoList.innerHTML = '';
         classArrays.forEach(item =>
         item[1].forEach(element =>
             printToDo(element)))
         closeForm()
 }) 
+}
+
+export function  createCategory() {
+    categorySubmit.addEventListener('click', () =>{
+        let category = categoryTitle.value;
+        classArrays.push([category,[]])
+        console.log(classArrays);
+        
+        newCategory.reset();
+        catList.innerHTML = '';
+        classArrays.forEach(item =>
+            printCategory(item[0])
+            )
+        itemClass.innerHTML = '';
+            classArrays.forEach(item =>
+                addCategoryOption(item[0])
+                )
+        categoryModal.style.display = "none";
+    })
+}
+
+export function printCategory(element) {//Prints Category and adds event listener to sort ToDo's
+        let newCategory = document.createElement('div');
+        newCategory.classList.add('categoryItems');
+        newCategory.textContent = (element);
+        catList.appendChild(newCategory)
+        newCategory.addEventListener('click', () =>{
+            for (let i = 0; i < classArrays.length; i++){
+                console.log(classArrays[i][0])
+                console.log(element)
+                if (classArrays[i][0]==element){
+                    toDoList.innerHTML = '';
+                    classArrays[i][1].forEach(element =>
+                        printToDo(element))
+                }
+            }
+        })  
+}
+
+export function addCategoryOption(element) {
+        let newOption = document.createElement('option');
+        newOption.classList.value = element;
+        newOption.textContent = element;
+        itemClass.appendChild(newOption);
 }
 
 export function closeToDo(){
@@ -79,10 +130,18 @@ export function closeToDo(){
     })
 }
 
+export function closeCategory(){
+    categoryCancel.addEventListener('click', () => {
+        newCategory.reset();
+        closeForm();
+    })
+}  
+
 export function displayForm(){
     newToDo.addEventListener('click', () =>{
         modal.style.display = "inline";
-    })}
+        })
+    }
 
 export function displayCategoryForm(){
     addCategory.addEventListener('click', () => {
@@ -90,6 +149,7 @@ export function displayCategoryForm(){
     })
 }
 
-function closeForm(){
+export function closeForm(){
         modal.style.display = "none"
+        categoryModal.style.display = "none";
 }
