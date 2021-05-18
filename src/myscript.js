@@ -1,13 +1,25 @@
-let defaultToDoArray = ["default",[]];
+let defaultToDoArray = ["Default",[]];
 let classArrays = [defaultToDoArray]
+let categoryNames =[]
+let showAll = document.createElement('div');
+
+export function checkCategory(element){//check to see if category already exists
+    categoryNames = []
+    for (let i=0; i<classArrays.length; i++){
+        let category = classArrays[i][0]
+        categoryNames.push(category)
+    }
+
+    let isCategoryName = (currentValue) => currentValue != element;
+    return (categoryNames.every(isCategoryName));
+    
+    
+}
+
 
 function sortArrays() {
     classArrays.forEach(element =>
-        element[1].sort((a,b) => b.date - a.date))
-
-        console.log(classArrays)
-    classArrays.forEach(element =>
-        console.log(element[1][0].date))
+        element[1].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()))
 }
 
 export default class ToDo {
@@ -21,20 +33,20 @@ export default class ToDo {
 
 export function getElements(){
     let divs = document.querySelectorAll('div');
-    divs.forEach(element =>{
-        element = document.getElementById("element");
+    divs.forEach(item =>{
+        item = document.getElementById("element");
     })
     let inputs = document.querySelectorAll('input');
-    inputs.forEach(element =>{
-        element = document.getElementById("element");
+    inputs.forEach(item =>{
+        item = document.getElementById("element");
     })
     let buttons = document.querySelectorAll("button");
-    buttons.forEach(element =>{
-        element = document.getElementById("element");
+    buttons.forEach(item =>{
+        item = document.getElementById("element");
     })
     let selects = document.querySelectorAll("select");
-    selects.forEach(element =>{
-        element = document.getElementById("element");
+    selects.forEach(item =>{
+        item = document.getElementById("element");
     })
 }
 
@@ -81,12 +93,13 @@ export function createToDo(){//Messy, not following single responsibility princi
 
 export function  createCategory() {
     categorySubmit.addEventListener('click', () =>{
+        if (categoryTitle.value != '' && checkCategory(categoryTitle.value)){
         let category = categoryTitle.value;
-        classArrays.push([category,[]])
-        console.log(classArrays);
-        
+        classArrays.push([category,[]])}
         newCategory.reset();
         catList.innerHTML = '';
+        createShowAll();
+        hideShowAll();
         classArrays.forEach(item =>
             printCategory(item[0])
             )
@@ -104,16 +117,15 @@ export function printCategory(element) {//Prints Category and adds event listene
         newCategory.textContent = (element);
         catList.appendChild(newCategory)
         newCategory.addEventListener('click', () =>{
+            displayShowAll();
             for (let i = 0; i < classArrays.length; i++){
-                console.log(classArrays[i][0])
-                console.log(element)
                 if (classArrays[i][0]==element){
                     toDoList.innerHTML = '';
                     classArrays[i][1].forEach(element =>
                         printToDo(element))
                 }
             }
-        })  
+        })
 }
 
 export function addCategoryOption(element) {
@@ -152,4 +164,31 @@ export function displayCategoryForm(){
 export function closeForm(){
         modal.style.display = "none"
         categoryModal.style.display = "none";
+}
+
+export function createShowAll(){
+    
+    showAll.classList.add('categoryItems');
+    showAll.textContent = "Show All";
+    catList.prepend(showAll);
+}
+
+export function hideShowAll(){
+    showAll.style.display = 'none';
+}
+
+export function displayShowAll(){
+    showAll.style.display = 'block';
+}
+
+export function showAllToDos(){
+    showAll.addEventListener('click', () => {
+        hideShowAll();
+        sortArrays();
+        toDoList.innerHTML = '';
+        classArrays.forEach(item =>
+        item[1].forEach(element =>
+            printToDo(element)))
+        closeForm()
+    })
 }

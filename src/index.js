@@ -1,4 +1,4 @@
-import {createToDo,closeForm, getElements,closeCategory, displayForm,printCategory, closeToDo, createCategory, displayCategoryForm} from './myscript.js'
+import {createToDo,closeForm,showAllToDos, displayShowAll,createShowAll, getElements,hideShowAll, closeCategory,checkCategory, displayForm,printCategory, closeToDo, createCategory, displayCategoryForm} from './myscript.js'
 
 getElements()
 
@@ -15,3 +15,15 @@ createCategory();
 closeCategory();
 
 closeForm();
+
+createShowAll();
+
+displayShowAll();
+
+hideShowAll();
+
+showAllToDos();
+
+
+
+
