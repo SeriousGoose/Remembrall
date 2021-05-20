@@ -1,7 +1,8 @@
-let defaultToDoArray = ["Default",[]];
+let defaultToDoArray = ["default",[]];
 let classArrays = [defaultToDoArray]
 let categoryNames =[]
 let showAll = document.createElement('div');
+let toDoId = 0;
 
 export function checkCategory(element){//check to see if category already exists
     categoryNames = []
@@ -16,6 +17,23 @@ export function checkCategory(element){//check to see if category already exists
     
 }
 
+export function changeRemembrall(){//check date of all ToDo's, changes title color if past due
+    let today = new Date();
+    let dateArray = [];
+    remembrall.style.color = "white"
+
+    classArrays.forEach(element => 
+        element[1].forEach(item =>
+            dateArray.push(new Date(item.date))))
+    
+    function checkDate(dueDate){
+       return dueDate.getTime() > today.getTime();
+   }
+    if (dateArray.every(checkDate) == false){
+        remembrall.style.color = "red"
+    }
+}
+
 
 function sortArrays() {
     classArrays.forEach(element =>
@@ -23,11 +41,12 @@ function sortArrays() {
 }
 
 export default class ToDo {
-    constructor(title,description,category,date){
+    constructor(title,description,category,date, id){
         this.title = title;
         this.description = description;
         this.category = category;
-        this.date = date;        
+        this.date = date;
+        this.id = id;
     }
 }
 
@@ -71,11 +90,15 @@ export function printToDo(element){
         let toDoDescription = document.createElement('div');
         toDoDescription.textContent = element.description;
         newToDo.appendChild(toDoDescription);}
+    console.log(element.id)
+    completeToDo(newToDo,element);
+    
 }
 
 export function createToDo(){//Messy, not following single responsibility principle
     formSubmit.addEventListener('click', () => {
-        let toDo = new ToDo(title.value, description.value, itemClass.value ,date.value )
+        
+        let toDo = new ToDo(title.value, description.value, itemClass.value ,date.value,toDoId )
     
         classArrays.forEach(element => {
             if ( toDo.category == element[0]){
@@ -88,8 +111,50 @@ export function createToDo(){//Messy, not following single responsibility princi
         item[1].forEach(element =>
             printToDo(element)))
         closeForm()
+        changeRemembrall();
+        return toDoId++;
 }) 
 }
+
+function completeToDo(item, remove){
+    item.addEventListener('click',() =>{
+        item.innerHTML = '';
+        item.style.display = "flex";
+        item.style.justifyContent = "space-evenly";
+        let question = document.createElement('div');
+        question.innerHTML = "Task Completed?"
+        item.appendChild(question);
+        let yesButton = document.createElement('button');
+        yesButton.textContent = "Yes";
+        item.appendChild(yesButton);
+        let noButton = document.createElement('button');
+        noButton.textContent = "No";
+        item.appendChild(noButton);
+
+        yesButton.addEventListener('click', () => {
+            item.remove();
+            for (let i =0; i<classArrays.length; i++){
+                if( classArrays[i][1].indexOf(remove) != -1){
+                    let index = classArrays[i][1].indexOf(remove);
+                    classArrays[i][1].splice(index,1)
+                }
+            }
+            changeRemembrall();
+            console.log(classArrays)
+        })
+        noButton.addEventListener('click', () => {
+            toDoList.innerHTML = '';
+            classArrays.forEach(item =>
+                item[1].forEach(element =>
+                    printToDo(element)))
+        })
+
+        
+
+
+    })
+}
+
 
 export function  createCategory() {
     categorySubmit.addEventListener('click', () =>{
