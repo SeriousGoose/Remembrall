@@ -70,30 +70,60 @@ export function getElements(){
 }
 
 export function printToDo(element){
+    let condensed = true;
     let newToDo = document.createElement('div');
     newToDo.classList.add("toDoItems");
     if(element.title != ''){
-    toDoList.appendChild(newToDo);}
-    if(element.title != ''){
-    let toDoTitle = document.createElement('div');
-    toDoTitle.textContent = element.title;
-    newToDo.appendChild(toDoTitle);}
-    if (element.date != ''){
-    let toDoDate = document.createElement('div');
-    toDoDate.textContent = "Due Date: " + element.date;
-    newToDo.appendChild(toDoDate);}
-    if (element.category != 'default'){
-    let toDoClass = document.createElement('div');
-    toDoClass.textContent = element.category;
-    newToDo.appendChild(toDoClass);}
-    if (element.description != ''){
-        let toDoDescription = document.createElement('div');
-        toDoDescription.textContent = element.description;
-        newToDo.appendChild(toDoDescription);}
-    console.log(element.id)
-    completeToDo(newToDo,element);
+        let toDoButtons = document.createElement('div')
+        newToDo.appendChild(toDoButtons)
+        toDoList.appendChild(newToDo);
+        let completeButton = document.createElement('button');
+        completeButton.textContent = "Complete";
+        toDoButtons.appendChild(completeButton)
+        let toDoTitle = document.createElement('div');
+        toDoTitle.textContent = element.title;
+        newToDo.appendChild(toDoTitle);
+        let detailsButton = document.createElement('button');
+        detailsButton.textContent = "+ Show Details";
+        toDoButtons.append(detailsButton);
+        let detailsTab = document.createElement('div');
+        if (element.date != ''){
+            let toDoDate = document.createElement('div');
+            toDoDate.textContent = "Due Date: " + element.date;
+            detailsTab.appendChild(toDoDate);}
+        if (element.category != 'default'){
+            let toDoClass = document.createElement('div');
+            toDoClass.textContent = "Category: " + element.category;
+            detailsTab.appendChild(toDoClass);}
+        if (element.description != ''){
+            let toDoDescription = document.createElement('div');
+            toDoDescription.textContent = "Description: " + element.description;
+            detailsTab.appendChild(toDoDescription);}
+        
     
-}
+    
+
+
+    detailsButton.addEventListener('click', () => {
+        console.log(condensed)
+        if(condensed == true){
+            condensed = false;
+            detailsButton.textContent = "-Hide Details"
+            newToDo.appendChild(detailsTab)
+        }
+        else if(condensed == false){
+            
+            condensed = true;
+            detailsButton.textContent = "+ Show Details"
+            newToDo.removeChild(detailsTab);
+        }
+        })
+        completeButton.addEventListener('click', () => {
+            completeToDo(newToDo,element);
+        })
+    
+    }}
+
 
 export function createToDo(){//Messy, not following single responsibility principle
     formSubmit.addEventListener('click', () => {
