@@ -3,6 +3,7 @@ let classArrays = [defaultToDoArray]
 let categoryNames =[]
 let showAll = document.createElement('div');
 let toDoId = 0;
+let allToDos = []
 
 export function checkCategory(element){//check to see if category already exists
     categoryNames = []
@@ -21,21 +22,31 @@ export function changeRemembrall(){//check date of all ToDo's, changes title col
     let today = new Date();
     let dateArray = [];
     remembrall.style.color = "white"
+    console.log(today)
 
-    classArrays.forEach(element => 
-        element[1].forEach(item =>
-            dateArray.push(new Date(item.date))))
+    for(let i = 0; i < classArrays.length; i++){
+        for(let j = 0; j < classArrays[i][1].length; j++){
+            if(classArrays[i][1][j].date != ''){
+                console.log(classArrays[i][1][j].date)
+                dateArray.push(new Date(classArrays[i][1][j].date))
+            }
+        }
+    }
     
     function checkDate(dueDate){
-       return dueDate.getTime() > today.getTime();
+       return (dueDate.getTime() + (dueDate.getTimezoneOffset()*720000)) >= today.getTime();
    }
     if (dateArray.every(checkDate) == false){
+        console.log(classArrays)
+        console.log(dateArray);
         remembrall.style.color = "red"
     }
 }
 
 
-function sortArrays() {
+
+function sortArrays() {   
+    allToDos.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     classArrays.forEach(element =>
         element[1].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()))
 }
@@ -105,7 +116,6 @@ export function printToDo(element){
 
 
     detailsButton.addEventListener('click', () => {
-        console.log(condensed)
         if(condensed == true){
             condensed = false;
             detailsButton.textContent = "-Hide Details"
@@ -130,19 +140,25 @@ export function createToDo(){//Messy, not following single responsibility princi
         
         let toDo = new ToDo(title.value, description.value, itemClass.value ,date.value,toDoId )
     
+        if(toDo.title != ''){
         classArrays.forEach(element => {
             if ( toDo.category == element[0]){
                 element[1].push(toDo)
             }})
+        allToDos = []
+        classArrays.forEach(item =>
+            item[1].forEach(element =>
+                allToDos.push(element)))
         newForm.reset();
         sortArrays();
         toDoList.innerHTML = '';
-        classArrays.forEach(item =>
-        item[1].forEach(element =>
-            printToDo(element)))
+        allToDos.forEach(item =>
+            printToDo(item))
+
         closeForm()
         changeRemembrall();
         return toDoId++;
+        }
 }) 
 }
 
@@ -170,13 +186,11 @@ function completeToDo(item, remove){
                 }
             }
             changeRemembrall();
-            console.log(classArrays)
         })
         noButton.addEventListener('click', () => {
             toDoList.innerHTML = '';
-            classArrays.forEach(item =>
-                item[1].forEach(element =>
-                    printToDo(element)))
+            allToDos.forEach(item =>
+                printToDo(item))
         })
 
         
@@ -184,6 +198,47 @@ function completeToDo(item, remove){
 
     })
 }
+function confirmRemove(item,remove){
+    item.addEventListener('click',() =>{
+        item.innerHTML = '';
+        item.style.display = "flex";
+        item.style.justifyContent = "space-evenly";
+        let question = document.createElement('div');
+        question.innerHTML = "Remove Category?"
+        item.appendChild(question);
+        let yesButton = document.createElement('button');
+        yesButton.textContent = "Yes";
+        item.appendChild(yesButton);
+        let noButton = document.createElement('button');
+        noButton.textContent = "No";
+        item.appendChild(noButton);
+
+        yesButton.addEventListener('click', () => {
+            item.remove();
+            for (let i = 0; i < classArrays.length; i++){
+                if (classArrays[i][0]==remove){
+                    classArrays.splice(i,1)
+                    catList.innerHTML = '';
+                    toDoList.innerHTML = '';
+                    classArrays.forEach(item =>
+                        item[1].forEach(thing =>
+                            printToDo(thing)))
+                    classArrays.forEach(item =>
+                        printCategory(item[0])
+                    
+                    )
+                }
+            changeRemembrall();
+            
+        }})
+        noButton.addEventListener('click', () => {
+            catList.innerHTML = '';
+            classArrays.forEach(item =>
+                printCategory(item[0])
+            
+            )
+        })
+})}
 
 
 export function  createCategory() {
@@ -209,9 +264,22 @@ export function  createCategory() {
 export function printCategory(element) {//Prints Category and adds event listener to sort ToDo's
         let newCategory = document.createElement('div');
         newCategory.classList.add('categoryItems');
-        newCategory.textContent = (element);
+        newCategory.style.justifyContent = "space-between"
         catList.appendChild(newCategory)
-        newCategory.addEventListener('click', () =>{
+        let thisCategory = document.createElement('div');
+        thisCategory.classList.add('categoryNames')
+        thisCategory.textContent = (element);
+        newCategory.appendChild(thisCategory)
+        if(element != "default"){
+            let removeCategory = document.createElement('button');
+            removeCategory.classList.add('categoryRemove')
+            removeCategory.textContent = "-";
+            newCategory.appendChild(removeCategory);
+            removeCategory.addEventListener('click', () =>{
+                confirmRemove(newCategory,element)
+            })
+        }
+        thisCategory.addEventListener('click', () =>{
             displayShowAll();
             for (let i = 0; i < classArrays.length; i++){
                 if (classArrays[i][0]==element){
@@ -281,9 +349,8 @@ export function showAllToDos(){
         hideShowAll();
         sortArrays();
         toDoList.innerHTML = '';
-        classArrays.forEach(item =>
-        item[1].forEach(element =>
-            printToDo(element)))
+        allToDos.forEach(item =>
+            printToDo(item))
         closeForm()
     })
 }
