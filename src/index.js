@@ -1,5 +1,6 @@
-import {createToDo,closeForm,changeRemembrall,showAllToDos, displayShowAll,createShowAll, getElements,hideShowAll, closeCategory,checkCategory, displayForm,printCategory, closeToDo, createCategory, displayCategoryForm} from './myscript.js'
+import {createToDo,closeForm,changeRemembrall,checkStorage,pageLoad, showAllToDos, displayShowAll,createShowAll, getElements,hideShowAll, closeCategory,checkCategory, displayForm,printCategory, closeToDo, createCategory, displayCategoryForm} from './myscript.js'
 
+checkStorage();
 getElements()
 
 createToDo()
@@ -25,6 +26,9 @@ hideShowAll();
 showAllToDos();
 
 changeRemembrall();
+
+
+pageLoad();
 
 
 
