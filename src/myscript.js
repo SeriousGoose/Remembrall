@@ -17,21 +17,20 @@ let categoryNames
 let toDoId 
 let allToDos 
 
-/*let classArrays = classArrays_deserialized
-let categoryNames = categoryNames_deserialized
-let toDoId = toDoId_deserialized
-let allToDos = allToDos_deserialized*/
 
 
 
+export function checkStorage(){
 let x = localStorage.getItem('classArray')
 let y = localStorage.getItem('categoryNames')
 let z = localStorage.getItem('allToDos')
 let w = localStorage.getItem('toDoId')
 
-
-export function checkStorage(){
-if(x== null){
+checkForStorageValue(x, classArray_serialized,classArraysOriginal,'classArray')
+checkForStorageValue(y,categoryNames_serialized,categoryNamesOriginal,'categoryNames')
+checkForStorageValue(z,allToDos_serialized,allToDosOriginal,'allToDos')
+checkForStorageValue(w,toDoId_serialized,toDoIdOriginal,'toDoId')
+/*if(x== null){
     
     classArray_serialized = JSON.stringify(classArraysOriginal);
     localStorage.setItem('classArray', classArray_serialized)
@@ -49,7 +48,7 @@ if(z== null){
 if(w== null){
     toDoId_serialized = JSON.stringify(toDoIdOriginal);
     localStorage.setItem('toDoId', toDoId_serialized)
-}
+}*/
 
 classArrays_deserialized = JSON.parse(localStorage.getItem('classArray'))
 categoryNames_deserialized = JSON.parse(localStorage.getItem('categoryNames'))
@@ -60,6 +59,14 @@ classArrays = classArrays_deserialized
 categoryNames = categoryNames_deserialized
 toDoId = toDoId_deserialized
 allToDos = allToDos_deserialized
+}
+
+function checkForStorageValue (value,serialized,original,storage ){
+    if(value== null){
+    
+        serialized = JSON.stringify(original);
+        localStorage.setItem(storage, serialized)
+    }
 }
 
 
@@ -73,27 +80,12 @@ function updateLocalStorage(){
     localStorage.setItem('categoryNames', categoryNames_serialized)
     localStorage.setItem('allToDos', allToDos_serialized)
     localStorage.setItem('toDoId', toDoId_serialized)
-
-
-    /*classArrays_deserialized = JSON.parse(localStorage.getItem('classArray'))
-    categoryNames_deserialized = JSON.parse(localStorage.getItem('categoryNames'))
-    allToDos_deserialized = JSON.parse(localStorage.getItem('allToDos'))
-    toDoId_deserialized = JSON.parse(localStorage.getItem('toDoId'))
-
-    classArrays = classArrays_deserialized
-    categoryNames = categoryNames_deserialized
-    toDoId = toDoId_deserialized
-    allToDos = allToDos_deserialized*/
-
 }
 
 document.addEventListener('click', ()=>{
     updateLocalStorage();
     
 })
-
-
-
 
 export function checkCategory(element){//check to see if category already exists
     categoryNames = []
@@ -111,7 +103,7 @@ export function checkCategory(element){//check to see if category already exists
 export function changeRemembrall(){//check date of all ToDo's, changes title color if past due
     let today = new Date();
     let dateArray = [];
-    remembrall.style.color = "white"
+    remembrall.style.color = "rgba(0, 89, 255, 0.815)"
 
     for(let i = 0; i < classArrays.length; i++){
         for(let j = 0; j < classArrays[i][1].length; j++){
@@ -128,8 +120,6 @@ export function changeRemembrall(){//check date of all ToDo's, changes title col
         remembrall.style.color = "red"
     }
 }
-
-
 
 function sortArrays() {   
     allToDos.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -172,16 +162,20 @@ export function printToDo(element){
     newToDo.classList.add("toDoItems");
     if(element.title != ''){
         let toDoButtons = document.createElement('div')
+        toDoButtons.classList.add("toDoButtons")
         newToDo.appendChild(toDoButtons)
         toDoList.appendChild(newToDo);
         let completeButton = document.createElement('button');
-        completeButton.textContent = "Complete";
+        let check = '\u2713'
+        completeButton.classList.add("completeButton")
+        completeButton.textContent = check;
         toDoButtons.appendChild(completeButton)
         let toDoTitle = document.createElement('div');
         toDoTitle.textContent = element.title;
         newToDo.appendChild(toDoTitle);
         let detailsButton = document.createElement('button');
-        detailsButton.textContent = "+ Show Details";
+        detailsButton.classList.add('detailsButton')
+        detailsButton.textContent = "Show More";
         toDoButtons.append(detailsButton);
         let detailsTab = document.createElement('div');
         if (element.date != ''){
@@ -204,13 +198,13 @@ export function printToDo(element){
     detailsButton.addEventListener('click', () => {
         if(condensed == true){
             condensed = false;
-            detailsButton.textContent = "-Hide Details"
+            detailsButton.textContent = "Show Less"
             newToDo.appendChild(detailsTab)
         }
         else if(condensed == false){
             
             condensed = true;
-            detailsButton.textContent = "+ Show Details"
+            detailsButton.textContent = "Show More"
             newToDo.removeChild(detailsTab);
         }
         })
@@ -232,21 +226,12 @@ export function createToDo(){
             if ( toDo.category == element[0]){
                 element[1].push(toDo)
             }})
-        allToDos = []
-        classArrays.forEach(item =>
-            item[1].forEach(element =>
-                allToDos.push(element)))
+        pushAllToDos()
         newForm.reset();
         sortArrays();
-        toDoList.innerHTML = '';
-        allToDos.forEach(item =>
-            printToDo(item))
-
+        printAllToDos()
         closeForm()
-        changeRemembrall();
-
-        console.log(classArrays)
-        
+        changeRemembrall();        
         return toDoId++;
         }
 }) 
@@ -275,12 +260,9 @@ function completeToDo(item, remove){
                 console.log(classArrays)
                 if(thing.id == remove.id){
                     console.log(stuff.indexOf(thing))
-                    let please = (stuff.indexOf(thing))
-                    stuff.splice(please,1)
-                    allToDos = []
-                    classArrays.forEach(item =>
-                        item[1].forEach(element =>
-                            allToDos.push(element)))
+                    let findItem = (stuff.indexOf(thing))
+                    stuff.splice(findItem,1)
+                    pushAllToDos()
                     
                     
                 }
@@ -290,42 +272,11 @@ function completeToDo(item, remove){
                 element[1].forEach(item =>
                     check(element[1],item)
                     )
-            )
-            
-            /*for (let i = 0; i<classArrays.length; i++){
-                for(let j = 0; j<classArrays[i].length; j++){
-                    console.log(classArrays[i][1])
-                /*if( classArrays[i][1].indexOf(remove) != -1){
-                    console.log("I'm Listening")
-                    console.log(classArrays[i][1])
-                    let index = classArrays[i][1].indexOf(remove);
-                    classArrays[i][1].splice(index,1)
-                }
-                if(classArrays[i][1][j].id == remove.id){
-                    console.log("REMOVAL WORKING")
-                    let index = classArrays[i][1].indexOf(remove);
-                    classArrays[i][1].splice(index,1)
-                    console.log(classArrays)
-                    allToDos = []
-                    classArrays.forEach(item =>
-                        item[1].forEach(element =>
-                            allToDos.push(element)))
-                }}
-            }
-            /*for (let j = 0; i < allToDos.length; j++){
-                if(allToDos[j].id == remove.id){
-                    console.log("NO WAY")
-                    let index2 = allToDos[j].indexOf(remove)
-                }*/
-                
-
-            
+            )           
             changeRemembrall();
         })
         noButton.addEventListener('click', () => {
-            toDoList.innerHTML = '';
-            allToDos.forEach(item =>
-                printToDo(item))
+            printAllToDos()
         })
     })
 
@@ -355,20 +306,16 @@ function confirmRemove(item,remove){
                     classArrays.forEach(item =>
                         item[1].forEach(thing =>
                             printToDo(thing)))
-                    classArrays.forEach(item =>
-                        printCategory(item[0])
-                    
-                    )
+                    printClassArraysCategories();
                 }
             changeRemembrall();
             
         }})
         noButton.addEventListener('click', () => {
             catList.innerHTML = '';
-            classArrays.forEach(item =>
-                printCategory(item[0])
+            printClassArraysCategories()
             
-            )
+            
         })
 })}
 
@@ -378,6 +325,7 @@ export function  createCategory() {
         if (categoryTitle.value != '' && checkCategory(categoryTitle.value)){
         let category = categoryTitle.value;
         classArrays.push([category,[]])}
+        else{alert("Please Enter a Valid Category")}
         newCategory.reset();
         catList.innerHTML = '';
         createShowAll();
@@ -480,17 +428,14 @@ export function showAllToDos(){
     showAll.addEventListener('click', () => {
         hideShowAll();
         sortArrays();
-        toDoList.innerHTML = '';
-        allToDos.forEach(item =>
-            printToDo(item))
+        printAllToDos()
         closeForm()
     })
 }
 
 export function pageLoad(){
     if(allToDos != undefined){
-    allToDos.forEach(item =>
-        printToDo(item))
+        printAllToDos()
     }
     if(classArrays != undefined){
     classArrays.forEach(item =>
@@ -501,3 +446,22 @@ export function pageLoad(){
         )
     }
 }
+
+function printClassArraysCategories(){
+    classArrays.forEach(item =>
+        printCategory(item[0]))
+}
+
+function pushAllToDos(){
+    allToDos = []
+    classArrays.forEach(item =>
+        item[1].forEach(element =>
+            allToDos.push(element)))
+}
+
+function printAllToDos(){
+    toDoList.innerHTML = '';
+    allToDos.forEach(item =>
+        printToDo(item))
+}
+

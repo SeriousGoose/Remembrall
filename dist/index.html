@@ -16,39 +16,19 @@
             justify-content: space-between;
             align-items: center;
             font-family: 'Roboto', sans-serif;
+            background-color: rgb(20, 20, 20);
         }
         #remembrall{
             text-align: center;
             
-            color: #fff;
+            color: rgba(0, 89, 255, 0.815);
             text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
             font-size: 8vmin;
             margin-left: 10vw;
-        }
-        #settings{
-            margin-right: 2vw;
             
         }
-        #settingsHeader{
-            border: black 2px solid;
-            background-color: blue;
-            padding: 5px;
-            text-align: center;
-        }
-        #settingsContainer{
-            border: black 2px solid;
-            background-color: rgb(0, 195, 255);
-            padding: 5px;
-        }
-
-        .settingsButtons{
-            background-color: transparent;
-            border: none;
-        }
-
-        .settingsButtons:hover{
-            text-decoration: underline;
-        }
+        body{
+background-color: rgb(46, 45, 45);        }
         #content{
             display: flex;
             justify-content: center;
@@ -62,13 +42,23 @@
             height:80vh;
             width: 90vw;
         }
+        #addCategory{
+            background-color: transparent;
+            border: none;
+            color:rgb(210, 209, 221);
+            font-size: 50px; 
+        }
+        #addCategory:hover{
+            color: rgba(0, 89, 255, 0.815);;
+        }
         #categories{
             height: 70vh;
             min-width: 200px;
             
-            border: black 2px solid;
-            background-color: rgb(171, 223, 69);
-            overflow-y:auto
+            /*border-right: black 5px solid;
+            /*background-color: rgb(171, 223, 69);*/
+            overflow-y:auto;
+            box-shadow: 4px 4px 6px black;
         }
         #catHeader{
             display: flex;
@@ -76,42 +66,53 @@
             
         }
         #catHeaderContainer{
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: black 2px solid;
-            background-color: green;
+            padding-left: 8px;
+            padding-right: 8px;
+            background-color: rgb(20, 20, 20);
+            color: rgb(210, 209, 221);
             min-width: 180px;
             height: 6vh;
             font-size: 30px;
         }
         .categoryItems{
-            border: black 1px solid;
+            
             padding: 5px;
             margin: 3px 6px 3px 6px;
             text-align: left;
-            background-color: rgb(42, 167, 42);
+            background-color: rgb(90, 78, 78);
+            border-radius: 7px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .categoryNames{
             width:80%;
         }
         .categoryRemove{
             width:20%;
+            background-color: transparent;
+            border: none;
+            font-size: 25px;
+        }
+        .categoryRemove:hover{
+            color: rgb(223, 27, 27);
         }
         #showAll {
             display: none;
         }
         .categoryItems:hover{
-            background-color: green;
+            box-shadow: 2px 2px 2px black;
         }
         #toDo{
             height: 70vh;
             width: 55vw;
             min-width: 400px;
-            border: black 2px solid;
-            background-color: pink;
+            box-shadow: 4px 4px 6px black;
+            
             overflow-y:auto
         }
         #toDoHeader{
@@ -123,30 +124,64 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border: black 2px solid;
-            background-color: red;
+            border-radius: 10px;
+            background-color: rgb(20, 20, 20);
+            color: rgb(210, 209, 221);
             width: 50vw;
             height: 6vh;
             font-size: 30px;
         }
+        #newToDo{
+            background-color: transparent;
+            border: none;
+            font-size: 60px;
+            color: rgb(210, 209, 221);
+        }
+        #newToDo:hover{
+            color:rgba(0, 89, 255, 0.815);
+        }
         
         .toDoItems{
-            border: black 1px solid;
+            align-items: center;
+            
             padding: 5px;
-            margin: 3px 6px 3px 6px;
+            margin: 6px 12px 6px 12px;
             text-align: center;
-            background-color: rgb(252, 104, 104);
+            background-color: rgba(0, 89, 255, 0.815);
+            color: black;
+            border-radius: 25px;
+            font-size: 20px;
             display: grid;
             grid-template-columns: auto auto auto;
+            box-shadow: 1px 1px 1px black;
         }
         .toDoItems:hover{
-            background-color: red;
+            box-shadow: 3px 3px 3px black;
+        }
+        .completeButton{
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: xx-large;
+        }
+        .completeButton:hover{
+            color: rgb(46, 224, 46);
+        }
+        .detailsButton{
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: large;
+        }
+        .detailsButton:hover{
+            font-size: x-large;
         }
         #form{
             width: 195px;
             height: 225px;
             border: black 2px solid;
-            background-color: violet;
+            background-color: rgba(0, 89, 255, 0.815);
+            border-radius: 10px;
             display: block;
             margin-left: auto;
             margin-right: auto;
@@ -161,7 +196,9 @@
             justify-content: center;
             align-items: center;
             border: black 2px solid;
-            background-color:purple;
+            background-color: rgb(20, 20, 20);
+            color: rgb(210, 209, 221);
+            border-radius: 10px;
             width: 175px;
             height: 45px;
             
@@ -172,14 +209,16 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
-            background-color: yellow;
-            border: black 2px solid;
+            background-color: rgb(90, 78, 78);
+            border-radius: 10px;
         }
         #newCategoryHeader{
             height:30px;
             width:150px;
             border: black 2px solid;
-            background-color: orange;
+            background-color: rgb(20, 20, 20);
+            color: rgb(210, 209, 221);
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -219,12 +258,6 @@
         <div id = "remembrall">Remembrall</div>
     </div>
     <div id = "settings">
-        <!--<div id ="settingsHeader">Settings</div>
-        <div id ="settingsContainer">
-            <button id = "categoryButton" class = "settingsButtons" title="Category Settings">Category Settings</button>
-            <br>
-            <button id = "userButton" class = "settingsButtons" title = "User Settings">User Settings</button>
-        </div>-->
     </div>
 </header>
 <body>
@@ -239,7 +272,6 @@
                 </div>
                 <div id = "catContainer">
                     <div id = "catList">
-                       <!-- <div id = "default" class = "categoryItems">Default</div>-->
                         </div>
                 </div>
             </div>
