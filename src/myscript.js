@@ -66,56 +66,6 @@ document.addEventListener('click', ()=>{
     
 })
 
-export function checkCategory(element){//check to see if category already exists
-    categoryNames = []
-    for (let i=0; i<classArrays.length; i++){
-        let category = classArrays[i][0]
-        categoryNames.push(category)
-    }
-
-    let isCategoryName = (currentValue) => currentValue != element;
-    return (categoryNames.every(isCategoryName));
-    
-    
-}
-
-export function changeRemembrall(){//check date of all ToDo's, changes title color if past due
-    let today = new Date();
-    let dateArray = [];
-    remembrall.style.color = "rgba(0, 89, 255, 0.815)"
-
-    for(let i = 0; i < classArrays.length; i++){
-        for(let j = 0; j < classArrays[i][1].length; j++){
-            if(classArrays[i][1][j].date != ''){
-                dateArray.push(new Date(classArrays[i][1][j].date))
-            }
-        }
-    }
-    
-    function checkDate(dueDate){
-       return (dueDate.getTime() + (dueDate.getTimezoneOffset()*720000)) >= today.getTime();
-   }
-    if (dateArray.every(checkDate) == false){
-        remembrall.style.color = "red"
-    }
-}
-
-function sortArrays() {   
-    allToDos.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    classArrays.forEach(element =>
-        element[1].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()))
-}
-
-export default class ToDo {
-    constructor(title,description,category,date, id){
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.date = date;
-        this.id = id;
-    }
-}
-
 export function getElements(){
     let divs = document.querySelectorAll('div');
     divs.forEach(thing =>{
@@ -133,6 +83,37 @@ export function getElements(){
     selects.forEach(item =>{
         item = document.getElementById("element");
     })
+}
+
+export default class ToDo {
+    constructor(title,description,category,date, id){
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.date = date;
+        this.id = id;
+    }
+}
+
+export function createToDo(){
+    formSubmit.addEventListener('click', () => {
+        
+        let toDo = new ToDo(title.value, description.value, itemClass.value ,date.value,toDoId )
+    
+        if(toDo.title != ''){
+        classArrays.forEach(element => {
+            if ( toDo.category == element[0]){
+                element[1].push(toDo)
+            }})
+        pushAllToDos()
+        newForm.reset();
+        sortArrays();
+        printAllToDos()
+        closeForm()
+        changeRemembrall();        
+        return toDoId++;
+        }
+}) 
 }
 
 export function printToDo(element){
@@ -193,28 +174,6 @@ export function printToDo(element){
     
     }}
 
-
-export function createToDo(){
-    formSubmit.addEventListener('click', () => {
-        
-        let toDo = new ToDo(title.value, description.value, itemClass.value ,date.value,toDoId )
-    
-        if(toDo.title != ''){
-        classArrays.forEach(element => {
-            if ( toDo.category == element[0]){
-                element[1].push(toDo)
-            }})
-        pushAllToDos()
-        newForm.reset();
-        sortArrays();
-        printAllToDos()
-        closeForm()
-        changeRemembrall();        
-        return toDoId++;
-        }
-}) 
-}
-
 function completeToDo(item, remove){
     item.addEventListener('click',() =>{
         item.innerHTML = '';
@@ -255,6 +214,60 @@ function completeToDo(item, remove){
     })
 
 }
+
+
+export function  createCategory() {
+    categorySubmit.addEventListener('click', () =>{
+        if (categoryTitle.value != '' && checkCategory(categoryTitle.value)){
+        let category = categoryTitle.value;
+        classArrays.push([category,[]])}
+        else{alert("Please Enter a Valid Category")}
+        newCategory.reset();
+        createShowAll();
+        hideShowAll();
+        printClassArraysCategories();
+        updateCategoryOptions();
+        categoryModal.style.display = "none";
+    })
+}
+
+export function checkCategory(element){//check to see if category already exists
+    categoryNames = []
+    for (let i=0; i<classArrays.length; i++){
+        let category = classArrays[i][0]
+        categoryNames.push(category)
+    }
+
+    let isCategoryName = (currentValue) => currentValue != element;
+    return (categoryNames.every(isCategoryName));
+    
+    
+}
+
+export function printCategory(element) {//Prints Category and adds event listener to sort ToDo's
+        let newCategory = document.createElement('div');
+        newCategory.classList.add('categoryItems');
+        newCategory.style.justifyContent = "space-between"
+        catList.appendChild(newCategory)
+        let thisCategory = document.createElement('div');
+        thisCategory.classList.add('categoryNames')
+        thisCategory.textContent = (element);
+        newCategory.appendChild(thisCategory)
+        if(element != "default"){
+            let removeCategory = document.createElement('button');
+            removeCategory.classList.add('categoryRemove')
+            removeCategory.textContent = "-";
+            newCategory.appendChild(removeCategory);
+            removeCategory.addEventListener('click', () =>{
+                confirmRemove(newCategory,element)
+            })
+        }
+        thisCategory.addEventListener('click', () =>{
+            displayShowAll();
+            filterCategory(element);
+        })
+}
+
 function confirmRemove(item,remove){
     item.addEventListener('click',() =>{
         item.innerHTML = '';
@@ -290,44 +303,31 @@ function confirmRemove(item,remove){
         })
 })}
 
+export function changeRemembrall(){//check date of all ToDo's, changes title color if past due
+    let today = new Date();
+    let dateArray = [];
+    remembrall.style.color = "rgba(0, 89, 255, 0.815)"
 
-export function  createCategory() {
-    categorySubmit.addEventListener('click', () =>{
-        if (categoryTitle.value != '' && checkCategory(categoryTitle.value)){
-        let category = categoryTitle.value;
-        classArrays.push([category,[]])}
-        else{alert("Please Enter a Valid Category")}
-        newCategory.reset();
-        createShowAll();
-        hideShowAll();
-        printClassArraysCategories();
-        updateCategoryOptions();
-        categoryModal.style.display = "none";
-    })
+    for(let i = 0; i < classArrays.length; i++){
+        for(let j = 0; j < classArrays[i][1].length; j++){
+            if(classArrays[i][1][j].date != ''){
+                dateArray.push(new Date(classArrays[i][1][j].date))
+            }
+        }
+    }
+    
+    function checkDate(dueDate){
+       return (dueDate.getTime() + (dueDate.getTimezoneOffset()*720000)) >= today.getTime();
+   }
+    if (dateArray.every(checkDate) == false){
+        remembrall.style.color = "red"
+    }
 }
 
-export function printCategory(element) {//Prints Category and adds event listener to sort ToDo's
-        let newCategory = document.createElement('div');
-        newCategory.classList.add('categoryItems');
-        newCategory.style.justifyContent = "space-between"
-        catList.appendChild(newCategory)
-        let thisCategory = document.createElement('div');
-        thisCategory.classList.add('categoryNames')
-        thisCategory.textContent = (element);
-        newCategory.appendChild(thisCategory)
-        if(element != "default"){
-            let removeCategory = document.createElement('button');
-            removeCategory.classList.add('categoryRemove')
-            removeCategory.textContent = "-";
-            newCategory.appendChild(removeCategory);
-            removeCategory.addEventListener('click', () =>{
-                confirmRemove(newCategory,element)
-            })
-        }
-        thisCategory.addEventListener('click', () =>{
-            displayShowAll();
-            filterCategory(element);
-        })
+function sortArrays() {   
+    allToDos.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    classArrays.forEach(element =>
+        element[1].sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()))
 }
 
 export function addCategoryOption(element) {
