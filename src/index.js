@@ -19,8 +19,6 @@ closeForm();
 
 createShowAll();
 
-displayShowAll();
-
 hideShowAll();
 
 showAllToDos();

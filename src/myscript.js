@@ -1,3 +1,4 @@
+
 let defaultToDoArray = ["default",[]];
 let classArraysOriginal = [defaultToDoArray]
 let categoryNamesOriginal =[]
@@ -17,9 +18,6 @@ let categoryNames
 let toDoId 
 let allToDos 
 
-
-
-
 export function checkStorage(){
 let x = localStorage.getItem('classArray')
 let y = localStorage.getItem('categoryNames')
@@ -30,25 +28,6 @@ checkForStorageValue(x, classArray_serialized,classArraysOriginal,'classArray')
 checkForStorageValue(y,categoryNames_serialized,categoryNamesOriginal,'categoryNames')
 checkForStorageValue(z,allToDos_serialized,allToDosOriginal,'allToDos')
 checkForStorageValue(w,toDoId_serialized,toDoIdOriginal,'toDoId')
-/*if(x== null){
-    
-    classArray_serialized = JSON.stringify(classArraysOriginal);
-    localStorage.setItem('classArray', classArray_serialized)
-}
-
-if(y== null){
-    categoryNames_serialized = JSON.stringify(categoryNamesOriginal);
-    localStorage.setItem('categoryNames', categoryNames_serialized)
-}
-
-if(z== null){
-    allToDos_serialized = JSON.stringify(allToDosOriginal);
-    localStorage.setItem('allToDos', allToDos_serialized)
-}
-if(w== null){
-    toDoId_serialized = JSON.stringify(toDoIdOriginal);
-    localStorage.setItem('toDoId', toDoId_serialized)
-}*/
 
 classArrays_deserialized = JSON.parse(localStorage.getItem('classArray'))
 categoryNames_deserialized = JSON.parse(localStorage.getItem('categoryNames'))
@@ -209,7 +188,6 @@ export function printToDo(element){
         }
         })
         completeButton.addEventListener('click', () => {
-            console.log(classArrays)
             completeToDo(newToDo,element);
         })
     
@@ -257,14 +235,10 @@ function completeToDo(item, remove){
             item.remove();
 
             function check(stuff, thing){
-                console.log(classArrays)
                 if(thing.id == remove.id){
-                    console.log(stuff.indexOf(thing))
                     let findItem = (stuff.indexOf(thing))
                     stuff.splice(findItem,1)
-                    pushAllToDos()
-                    
-                    
+                    pushAllToDos() 
                 }
             }
             
@@ -301,18 +275,15 @@ function confirmRemove(item,remove){
             for (let i = 0; i < classArrays.length; i++){
                 if (classArrays[i][0]==remove){
                     classArrays.splice(i,1)
-                    catList.innerHTML = '';
-                    toDoList.innerHTML = '';
-                    classArrays.forEach(item =>
-                        item[1].forEach(thing =>
-                            printToDo(thing)))
+                    pushAllToDos();
+                    printAllToDos();
                     printClassArraysCategories();
                 }
             changeRemembrall();
+            updateCategoryOptions();
             
         }})
         noButton.addEventListener('click', () => {
-            catList.innerHTML = '';
             printClassArraysCategories()
             
             
@@ -327,16 +298,10 @@ export function  createCategory() {
         classArrays.push([category,[]])}
         else{alert("Please Enter a Valid Category")}
         newCategory.reset();
-        catList.innerHTML = '';
         createShowAll();
         hideShowAll();
-        classArrays.forEach(item =>
-            printCategory(item[0])
-            )
-        itemClass.innerHTML = '';
-            classArrays.forEach(item =>
-                addCategoryOption(item[0])
-                )
+        printClassArraysCategories();
+        updateCategoryOptions();
         categoryModal.style.display = "none";
     })
 }
@@ -361,13 +326,7 @@ export function printCategory(element) {//Prints Category and adds event listene
         }
         thisCategory.addEventListener('click', () =>{
             displayShowAll();
-            for (let i = 0; i < classArrays.length; i++){
-                if (classArrays[i][0]==element){
-                    toDoList.innerHTML = '';
-                    classArrays[i][1].forEach(element =>
-                        printToDo(element))
-                }
-            }
+            filterCategory(element);
         })
 }
 
@@ -420,7 +379,7 @@ export function hideShowAll(){
     showAll.style.display = 'none';
 }
 
-export function displayShowAll(){
+function displayShowAll(){
     showAll.style.display = 'block';
 }
 
@@ -448,6 +407,7 @@ export function pageLoad(){
 }
 
 function printClassArraysCategories(){
+    catList.innerHTML = '';
     classArrays.forEach(item =>
         printCategory(item[0]))
 }
@@ -463,5 +423,22 @@ function printAllToDos(){
     toDoList.innerHTML = '';
     allToDos.forEach(item =>
         printToDo(item))
+}
+
+function updateCategoryOptions(){
+    itemClass.innerHTML = '';
+            classArrays.forEach(item =>
+                addCategoryOption(item[0])
+                )
+}
+
+function filterCategory(element){
+    for (let i = 0; i < classArrays.length; i++){
+        if (classArrays[i][0]==element){
+            toDoList.innerHTML = '';
+            classArrays[i][1].forEach(element =>
+                printToDo(element))
+        }
+    }
 }
 
